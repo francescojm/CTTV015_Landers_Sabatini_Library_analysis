@@ -128,8 +128,12 @@ GREEDY_optimal_guide_search<-function(GUIDE_FCs,gene){
     
     noriginalGuides<-length(originalGuides)
     
+    if(noriginalGuides>=5){
+        guideCombos<-combn(x = noriginalGuides,5)    
+    }else{
+        guideCombos<-matrix(1:length(noriginalGuides),length(originalGuides),1)
+    }
     
-    guideCombos<-combn(x = noriginalGuides,5)
     ncomb<-ncol(guideCombos)
 
     
@@ -222,6 +226,6 @@ toADD<-intersect(GenesToAdd,rownames(LS_crispr_scores))
 
 GUIDE_FCs<-RNAcountsFCs(LS_raw_guide_counts)
 
-for (i in 1:length(toADD)){
+for (i in 118:length(toADD)){
     GREEDY_optimal_guide_search(GUIDE_FCs,toADD[i])
 }
