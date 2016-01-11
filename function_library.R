@@ -192,40 +192,50 @@ GREEDY_optimal_guide_search<-function(GUIDE_FCs,gene){
 #     
 #     par(mfrow=c(1,2))
     
-    write.table(toSave,quote=FALSE,sep='\t',row.names = TRUE,col.names = FALSE,
-                file=paste('../../RESULTS/CTTV015_Landers_Sabatini_Library_analysis/txts/',
-                           gene,'.txt',sep=''))
-    pdf(paste('../../RESULTS/CTTV015_Landers_Sabatini_Library_analysis/pdfs/',gene,'.pdf',sep=''),
-        width = 15,height = 7)
-    layout(matrix(c(1,2), 1, 2, byrow = TRUE),widths = c(5,2))
-    plot(c(original_CS_pattern[,1],best_CS_pattern[,1]),
-         c(original_CS_pattern[,2],best_CS_pattern[,2]),
-         pch=c(rep(16,4),rep(17,4)),bg='white',col=c('red','blue','green','purple','red','blue','green','purple'),
-         cex=2,xlab='absolute CRISPR score',ylab='-log10 p-value',main=gene)
-
-    COLS<-c('red','blue','green','purple')
-    for (i in 1:4){
-        lines(c(original_CS_pattern[i,1],best_CS_pattern[i,1]),
-              c(original_CS_pattern[i,2],best_CS_pattern[i,2]),
-              col=COLS[i],lwd=2)            
+    
+    DIRECTORY<-paste('../../RESULTS/CTTV015_Landers_Sabatini_Library_analysis/outComes/',str_sub(gene,start = 1,end = 1),'/',sep = '')
+    
+    if(!file.exists(DIRECTORY)){
+        dir.create(DIRECTORY)
     }
-         
-    abline(h=-log10(0.05),lty=2)
-    abline(v=1,lty=2)
-    par(mar=c(0,0,4,0))
-    plot(0,0,xaxt='n',yaxt='n',frame.plot = FALSE,col=NA,xlab='',ylab='')
-    legend('top',pch=c(16,17,15,15,15,15),legend=c(paste('all',noriginalGuides,'guides'),
-                                             'best 5 guide subset',
-                                             'KBM7','K562','Jiyoye','Raji'),
-           col=c('black','black',COLS))
-    dev.off()
+    
+    
+    
+    write.table(toSave,quote=FALSE,sep='\t',row.names = TRUE,col.names = FALSE,
+                file=paste(DIRECTORY,
+                           gene,'.txt',sep=''))
+#     pdf(paste('../../RESULTS/CTTV015_Landers_Sabatini_Library_analysis/pdfs/',gene,'.pdf',sep=''),
+#         width = 15,height = 7)
+#     layout(matrix(c(1,2), 1, 2, byrow = TRUE),widths = c(5,2))
+#     plot(c(original_CS_pattern[,1],best_CS_pattern[,1]),
+#          c(original_CS_pattern[,2],best_CS_pattern[,2]),
+#          pch=c(rep(16,4),rep(17,4)),bg='white',col=c('red','blue','green','purple','red','blue','green','purple'),
+#          cex=2,xlab='absolute CRISPR score',ylab='-log10 p-value',main=gene)
+# 
+#     COLS<-c('red','blue','green','purple')
+#     for (i in 1:4){
+#         lines(c(original_CS_pattern[i,1],best_CS_pattern[i,1]),
+#               c(original_CS_pattern[i,2],best_CS_pattern[i,2]),
+#               col=COLS[i],lwd=2)            
+#     }
+#          
+#     abline(h=-log10(0.05),lty=2)
+#     abline(v=1,lty=2)
+#     par(mar=c(0,0,4,0))
+#     plot(0,0,xaxt='n',yaxt='n',frame.plot = FALSE,col=NA,xlab='',ylab='')
+#     legend('top',pch=c(16,17,15,15,15,15),legend=c(paste('all',noriginalGuides,'guides'),
+#                                              'best 5 guide subset',
+#                                              'KBM7','K562','Jiyoye','Raji'),
+#            col=c('black','black',COLS))
+#     dev.off()
     options(warn=0)
 }
 
-toADD<-intersect(GenesToAdd,rownames(LS_crispr_scores))
+GENES<-rownames(LS_crispr_scores)
 
 GUIDE_FCs<-RNAcountsFCs(LS_raw_guide_counts)
 
-for (i in 118:length(toADD)){
-    GREEDY_optimal_guide_search(GUIDE_FCs,toADD[i])
+nGENES<-length(GENES)
+for (i in 1:nGENES){
+    GREEDY_optimal_guide_search(GUIDE_FCs,GENES[i])
 }
