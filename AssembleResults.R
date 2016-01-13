@@ -4,10 +4,13 @@ library(stringr)
 Letter_dirs<-dir('../../RESULTS/CTTV015_Landers_Sabatini_Library_analysis/outComes/')
 nLetters<-length(Letter_dirs)
 
+load('../../DATA/CTTV015_Landers_Sabatini_Library_analysis/R/alreadyincludedGuides.rdata')
 # includedGuides<-read.table('../../DATA/CTTV015_Landers_Sabatini_Library_analysis/internal/Copy of aac7041_SM_Table_S1-toFrancesco2.txt',sep='\t',header = TRUE,stringsAsFactors = FALSE)
 # includedGuides<-includedGuides[which(includedGuides$Present.in.the.current.library.=='Yes' | includedGuides$BbsI.sites.=='Yes'),1]
 # save(includedGuides,file='../../DATA/CTTV015_Landers_Sabatini_Library_analysis/alreadyincludedGuides.rdata')
 
+
+iniy<-1
 for (i in 1:nLetters){
     currentFC<-dir(paste('../../RESULTS/CTTV015_Landers_Sabatini_Library_analysis/outComes/',Letter_dirs[i],sep=''))
 
@@ -27,18 +30,20 @@ for (i in 1:nLetters){
             }
             
             
-            if (length(currentList)==5){
+            if (length(currentList)>0){
                 currentGene<-unlist(str_split(currentFC[j],'.txt'))[1]
                 currentBunch<-cbind(rep(currentGene,5),currentList)
             }else{
                     currentBunch<-NULL
                 }
-    
+            
+            if (iniy == 1){
+                TOTRES<-currentBunch
+                iniy<-0
+            }else{
+                TOTRES<-rbind(TOTRES,currentBunch)
+            }
     }
     
-    if (i == 1){
-        TOTRES<-currentBunch
-    }else{
-        TOTRES<-rbind(TOTRES,currentBunch)
-    }
+    
     }
